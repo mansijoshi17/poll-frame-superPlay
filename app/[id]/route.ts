@@ -33,7 +33,7 @@ export async function GET(req: NextRequest, res: NextResponse) {
         action: "post",
       })),
       image: {
-        url: `https://bafybeia6w3skqj5uhgfvnma22ycprlyznpthj52eo5x5gflkg4i7meenuy.ipfs.dweb.link/`,
+        url: `https://placehold.co/500x500/white/black?text=hello guyes`,
       },
     });
     return new NextResponse(frameMetadata);
