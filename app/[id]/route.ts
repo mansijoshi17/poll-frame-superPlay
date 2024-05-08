@@ -4,7 +4,7 @@ import { getPoll, balanceOf } from "@/utils/mint";
 import { PinataFDK } from "pinata-fdk";
 import { BetForPrediction, BetAgainstPrediction } from "@/utils/mint";
 import { ethers } from "ethers";
-import { handle } from 'frog/vercel'
+import { handle } from "frog/vercel";
 
 const fdk = new PinataFDK({
   pinata_jwt: process.env.PINATA_JWT as string,
@@ -33,9 +33,10 @@ export async function GET(req: NextRequest, res: NextResponse) {
         action: "post",
       })),
       image: {
-        url: `https://placehold.co/500x500/white/black?text=${pollData.title}%0AEnding In : ${formattedTime}`,
+        url: `https://placehold.co/500x500/white/black?text=${encodeURIComponent(
+          pollData.title
+        )}%0A%0AEnding In : ${encodeURIComponent(formattedTime)}`,
       },
-      
     });
     return new NextResponse(frameMetadata);
   } else {
