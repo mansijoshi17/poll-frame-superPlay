@@ -4,7 +4,7 @@ import { getPoll, balanceOf } from "@/utils/mint";
 import { PinataFDK } from "pinata-fdk";
 import { BetForPrediction, BetAgainstPrediction } from "@/utils/mint";
 import { ethers } from "ethers";
-import { handle } from "frog/vercel";
+import { handle } from 'frog/vercel'
 
 const fdk = new PinataFDK({
   pinata_jwt: process.env.PINATA_JWT as string,
@@ -16,15 +16,15 @@ export async function GET(req: NextRequest, res: NextResponse) {
   const pollData: any = await getPoll(pollLink); // Retrieve the poll data based on the link
 
   if (pollData) {
-    // const dateString = pollData.endDate;
-    // const date = new Date(dateString);
+    const dateString = pollData.endDate;
+    const date = new Date(dateString);
 
-    // const days = date.getUTCDate() - 1;
-    // const hours = date.getUTCHours();
-    // const minutes = date.getUTCMinutes();
-    // const seconds = date.getUTCSeconds();
+    const days = date.getUTCDate() - 1;
+    const hours = date.getUTCHours();
+    const minutes = date.getUTCMinutes();
+    const seconds = date.getUTCSeconds();
 
-    // const formattedTime = `${days}:${hours}:${minutes}:${seconds}`;
+    const formattedTime = `${days}:${hours}:${minutes}:${seconds}`;
 
     const frameMetadata = await fdk.getFrameMetadata({
       post_url: `${process.env.BASE_URL}/${pollData._id}`,
@@ -33,8 +33,9 @@ export async function GET(req: NextRequest, res: NextResponse) {
         action: "post",
       })),
       image: {
-        url: `https://placehold.co/500x500/white/black?text=${pollData.title}%0AEnding In:`,
+        url: `https://placehold.co/500x500/white/black?text=${pollData.title}%0AEnding In : ${formattedTime}`,
       },
+      
     });
     return new NextResponse(frameMetadata);
   } else {
