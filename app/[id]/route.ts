@@ -78,7 +78,6 @@ export async function POST(req: NextRequest, res: NextResponse) {
     }
   } else {
     const frameMetadata = await fdk.getFrameMetadata({
-      post_url: `${process.env.BASE_URL}/redirect`,
       buttons: [
         {
           label: `${typeof balance}`,
