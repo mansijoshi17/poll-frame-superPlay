@@ -33,7 +33,7 @@ export async function GET(req: NextRequest, res: NextResponse) {
         action: "post",
       })),
       image: {
-        url: `https://placehold.co/600x400/white/black?text=${pollData.title}`,
+        url: `https://via.placeholder.com/600x400/white/black?text=${pollData.title}`,
       },
     });
     return new NextResponse(frameMetadata);
