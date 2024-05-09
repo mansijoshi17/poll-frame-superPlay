@@ -33,7 +33,7 @@ export async function GET(req: NextRequest, res: NextResponse) {
         action: "post",
       })),
       image: {
-        url: "https://via.placeholder.com/640x480.png/a59090/000000?Text=640x480",
+        url: `https://via.placeholder.com/640x480.png/a59090/000000?Text=${pollData.title}`,
       },
     });
     return new NextResponse(frameMetadata);
