@@ -33,7 +33,9 @@ export async function GET(req: NextRequest, res: NextResponse) {
         action: "post",
       })),
       image: {
-        url: `https://via.placeholder.com/640x480.png/a59090/000000?Text=${pollData.title}`,
+        url: `https://placehold.co/600x400/white/black?text=${encodeURIComponent(
+          pollData.title
+        )}`,
       },
     });
     return new NextResponse(frameMetadata);
