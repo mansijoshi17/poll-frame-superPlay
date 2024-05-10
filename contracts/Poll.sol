@@ -4,20 +4,20 @@ pragma solidity ^0.8.0;
 contract PollContract {
     // Structure to hold the details of a poll
     struct Poll {
-        uint256 id;
+        string id;
         string name;
         mapping(uint => uint) choices; // Choice number to votes count
         mapping(address => bool) voters; // Track if an address has voted
     }
-
+    
     // State variable to store polls
-    mapping(uint256 => Poll) private polls;
+    mapping(string => Poll) private polls;
 
     // Event to emit when a vote is cast
-    event VoteCasted(uint256 indexed pollId, uint choice, uint votes);
+    event VoteCasted(string indexed pollId, uint choice, uint votes);
 
     // Function to create a new poll
-    function createPoll(string memory name, uint numChoices, uint pollId) public returns (uint256) {
+    function createPoll(string calldata name, uint numChoices, string calldata pollId) public returns (string calldata) {
         Poll storage p = polls[pollId];
         p.id = pollId;
         p.name = name;
@@ -31,7 +31,7 @@ contract PollContract {
     }
 
     // Function to vote on a poll
-    function vote(uint256 pollId, uint choice) public {
+    function vote(string calldata  pollId, uint choice) public {
         Poll storage p = polls[pollId];
         require(choice != 0, "Choice must be greater than zero");
         require(!p.voters[msg.sender], "You have already voted!");
@@ -47,7 +47,7 @@ contract PollContract {
     }
 
     // Function to get the total votes for a choice in a poll
-    function getVotes(uint256 pollId, uint choice) public view returns (uint) {
+    function getVotes(string calldata pollId, uint choice) public view returns (uint) {
         Poll storage p = polls[pollId];
         return p.choices[choice];
     }

@@ -5,7 +5,6 @@ import { getPoll, balanceOf } from "@/utils/mint";
 import { PinataFDK } from "pinata-fdk";
 import { Vote } from "@/utils/mint";
 
-
 const fdk = new PinataFDK({
   pinata_jwt: process.env.PINATA_JWT as string,
   pinata_gateway: process.env.GATEWAY_URL as string,
@@ -25,7 +24,8 @@ export async function POST(req: NextRequest, res: NextResponse) {
 
   // const balance = await balanceOf(address);
   try {
-    await Vote(pollData._id, choiceVal);
+    const vote = await Vote(pollId, choiceVal);
+    console.log(vote);
     const frameMetadata = await fdk.getFrameMetadata({
       post_url: `${process.env.BASE_URL}/redirect`,
       buttons: [

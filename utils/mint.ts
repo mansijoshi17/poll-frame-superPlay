@@ -60,7 +60,7 @@ export async function CreatePoll(
   }
 }
 
-export async function Vote(pollId: bigint, choice: number) {
+export async function Vote(pollId: string, choice: number) {
   try {
     const { request }: any = await publicClient.simulateContract({
       account,
