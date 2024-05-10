@@ -27,12 +27,16 @@ export async function GET(req: NextRequest, res: NextResponse) {
 
     const formattedTime = `${days}:${hours}:${minutes}:${seconds}`;
 
+    var choice;
+
     const frameMetadata = await fdk.getFrameMetadata({
       post_url: `${process.env.BASE_URL}/${pollData._id}`,
       buttons: pollData.choices.map((choice: any) => ({
         label: choice.value,
-        action: `${process.env.BASE_URL}/vote/${pollData._id}/${choice.id}`, // Embedding choice index
+        action: "post", // Embedding choice index
+        target: `${process.env.BASE_URL}/vote/${pollData._id}/${choice.id}`,
       })),
+
       image: {
         url: `https://via.placeholder.com/600x400/white/black?text=${pollData.title}%0A%0AEnding In : ${formattedTime}`,
       },
