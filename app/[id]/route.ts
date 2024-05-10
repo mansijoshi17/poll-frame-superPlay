@@ -1,8 +1,9 @@
+"use server";
 import { NextRequest, NextResponse } from "next/server";
 import { getConnectedAddressForUser } from "@/utils/fc";
 import { getPoll, balanceOf } from "@/utils/mint";
 import { PinataFDK } from "pinata-fdk";
-import { BetForPrediction, BetAgainstPrediction } from "@/utils/mint";
+import { Vote } from "@/utils/mint";
 import { ethers } from "ethers";
 import { handle } from "frog/vercel";
 
@@ -30,7 +31,7 @@ export async function GET(req: NextRequest, res: NextResponse) {
       post_url: `${process.env.BASE_URL}/${pollData._id}`,
       buttons: pollData.choices.map((choice: any) => ({
         label: choice.value,
-        action: "post",
+        action: `${process.env.BASE_URL}/vote/${pollData._id}/${choice.id}`, // Embedding choice index
       })),
       image: {
         url: `https://via.placeholder.com/600x400/white/black?text=${pollData.title}%0A%0AEnding In : ${formattedTime}`,
@@ -44,41 +45,25 @@ export async function GET(req: NextRequest, res: NextResponse) {
 }
 
 export async function POST(req: NextRequest, res: NextResponse) {
-  const pollLink = req.nextUrl.pathname.split("/").pop(); // Extract the poll link from the URL
-  const pollData: any = await getPoll(pollLink); // Retrieve the poll data based on the link
+  // const pollLink = req.nextUrl.pathname.split("/").pop(); // Extract the poll link from the URL
+
+  const parts = req.nextUrl.pathname.split("/");
+  const pollId = parts[parts.length - 2];
+  const choiceVal = parseInt(parts[parts.length - 1]);
+
+  const pollData: any = await getPoll(pollId); // Retrieve the poll data based on the link
 
   const fid = pollData.fid;
   const address = await getConnectedAddressForUser(fid);
 
-  const balance = await balanceOf(address);
-
-  if (typeof balance === "number" && balance !== null && balance > 0) {
-    try {
-      const Bet = await BetForPrediction(ethers.parseUnits("0.001", "ether"));
-      console.log(Bet);
-      const frameMetadata = await fdk.getFrameMetadata({
-        post_url: `${process.env.BASE_URL}/redirect`,
-        buttons: [
-          {
-            label: "Want to learn more about crypto?",
-            action: "post_redirect",
-          },
-        ],
-        image: {
-          url: "https://bafybeia6w3skqj5uhgfvnma22ycprlyznpthj52eo5x5gflkg4i7meenuy.ipfs.dweb.link/",
-        },
-      });
-
-      return new NextResponse(frameMetadata);
-    } catch (error) {
-      console.log(error);
-      return NextResponse.json({ error: error });
-    }
-  } else {
+  // const balance = await balanceOf(address);
+  try {
+    await Vote(pollData._id, choiceVal);
     const frameMetadata = await fdk.getFrameMetadata({
+      post_url: `${process.env.BASE_URL}/redirect`,
       buttons: [
         {
-          label: `${typeof balance}`,
+          label: "Want to learn more about crypto?",
           action: "post_redirect",
         },
       ],
@@ -86,8 +71,13 @@ export async function POST(req: NextRequest, res: NextResponse) {
         url: "https://bafybeia6w3skqj5uhgfvnma22ycprlyznpthj52eo5x5gflkg4i7meenuy.ipfs.dweb.link/",
       },
     });
+
     return new NextResponse(frameMetadata);
+  } catch (error) {
+    console.log(error);
+    return NextResponse.json({ error: error });
   }
+
   // else {
   //   const frameMetadata = await fdk.getFrameMetadata({
   //     post_url: `${process.env.BASE_URL}/redirect`,

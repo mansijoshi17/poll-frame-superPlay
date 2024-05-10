@@ -19,11 +19,13 @@
     "react": "^18",
     "react-datepicker": "^6.5.0",
     "react-dom": "^18",
-    "viem": "^2.7.9"
+    "viem": "^2.7.9",
+    "ethers": "^6.9.2"
   },
   "devDependencies": {
     "@types/node": "^20",
     "@types/react": "^18",
+    "@types/react-datepicker": "^6.2.0",
     "@types/react-dom": "^18",
     "autoprefixer": "^10.0.1",
     "postcss": "^8",

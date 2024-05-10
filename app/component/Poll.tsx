@@ -4,6 +4,8 @@ import axios from "axios";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { useProfile } from "@farcaster/auth-kit";
+import { CreatePoll } from "@/utils/mint";
+import { ethers } from "ethers";
 
 const PollCreator = () => {
   const [pollTitle, setPollTitle] = useState("");
@@ -35,19 +37,20 @@ const PollCreator = () => {
     setChoices([...choices, newChoice]);
   };
 
-  const handleRemoveChoice = (id) => {
+  const handleRemoveChoice = (id: number) => {
     setChoices(choices.filter((choice) => choice.id !== id));
   };
 
-  const handleChangeChoice = (id, value) => {
+  const handleChangeChoice = (id: number, value: any) => {
     const updatedChoices = choices.map((choice) =>
       choice.id === id ? { ...choice, value } : choice
     );
     setChoices(updatedChoices);
   };
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e: any) => {
     e.preventDefault();
+
     await axios
       .post("https://frame-backend-z2b9.onrender.com/polls/add", {
         title: pollTitle,
@@ -55,9 +58,10 @@ const PollCreator = () => {
         endDate: endDate,
         fid: fid ? fid : localStorage.getItem("fid"),
       })
-      .then((res) => {
-        alert("Poll Created!");
+      .then(async (res) => {
+        await CreatePoll(pollTitle, choices.length, res.data.data._id);
         getPolls(); // Refresh the list of polls
+        alert("Poll Created!");
       })
       .catch((err) => {
         alert("Something went wrong!");
@@ -129,7 +133,7 @@ const PollCreator = () => {
           </label>
           <DatePicker
             selected={endDate}
-            onChange={(date) => setEndDate(date)}
+            onChange={(date: any) => setEndDate(date)}
             className="mt-1  w-full rounded-md border-black-300   sm:text-sm p-2 input border bg-pgray-100 rounded-xl border-pgray-100"
             showTimeSelect
             dateFormat="Pp"
@@ -148,7 +152,7 @@ const PollCreator = () => {
         <h1 className="text-3xl font-bold mb-6 text-center">Predictions</h1>
         <div className="max-w-3xl mx-auto bg-white shadow rounded-lg overflow-hidden">
           <ul className="divide-y divide-gray-200">
-            {polls.map((poll, index) => (
+            {polls.map((poll: any, index: number) => (
               <li key={poll._id} className="px-6 py-4">
                 <div className="flex justify-between items-center">
                   <div>

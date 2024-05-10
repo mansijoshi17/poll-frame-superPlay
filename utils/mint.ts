@@ -1,16 +1,16 @@
+"use server";
 import { createWalletClient, http, createPublicClient } from "viem";
 import { privateKeyToAccount } from "viem/accounts";
 import { baseSepolia } from "viem/chains";
 import contractAbi from "./contract.json";
 import axios from "axios";
+import { publicClient } from "./publicClient";
+
 const contractAddress = process.env.CONTRACT_ADDRESS as `0x`;
 
-const account = privateKeyToAccount((process.env.PRIVATE_KEY as `0x`) || "");
-
-export const publicClient = createPublicClient({
-  chain: baseSepolia,
-  transport: http(process.env.ALCHEMY_URL),
-});
+const account = privateKeyToAccount(
+  (process.env.NEXT_APP_PRIVATE_KEY as `0x`) || ""
+);
 
 interface PollData {
   title: string;
@@ -38,14 +38,19 @@ export async function getPoll(pollId: string | undefined) {
   }
 }
 
-export async function BetForPrediction(amount: bigint) {
+export async function CreatePoll(
+  name: string,
+  numOfChoice: number,
+  pollId: string
+) {
   try {
+    console.log(typeof pollId, "pollId in MINT TS");
     const { request }: any = await publicClient.simulateContract({
       account,
       address: contractAddress,
       abi: contractAbi,
-      functionName: "betFor",
-      args: [amount],
+      functionName: "createPoll",
+      args: [name, numOfChoice, pollId],
     });
     const transaction = await walletClient.writeContract(request);
     return transaction;
@@ -55,14 +60,14 @@ export async function BetForPrediction(amount: bigint) {
   }
 }
 
-export async function BetAgainstPrediction(amount: bigint) {
+export async function Vote(pollId: bigint, choice: number) {
   try {
     const { request }: any = await publicClient.simulateContract({
       account,
       address: contractAddress,
       abi: contractAbi,
-      functionName: "betAgainst",
-      args: [amount],
+      functionName: "vote",
+      args: [pollId, choice],
     });
     const transaction = await walletClient.writeContract(request);
     return transaction;
@@ -71,6 +76,23 @@ export async function BetAgainstPrediction(amount: bigint) {
     return error;
   }
 }
+
+// export async function BetAgainstPrediction(amount: bigint) {
+//   try {
+//     const { request }: any = await publicClient.simulateContract({
+//       account,
+//       address: contractAddress,
+//       abi: contractAbi,
+//       functionName: "betAgainst",
+//       args: [amount],
+//     });
+//     const transaction = await walletClient.writeContract(request);
+//     return transaction;
+//   } catch (error) {
+//     console.log(error);
+//     return error;
+//   }
+// }
 
 export async function mintNft(toAddress: string) {
   try {
