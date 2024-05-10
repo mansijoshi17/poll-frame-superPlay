@@ -30,7 +30,6 @@ export async function GET(req: NextRequest, res: NextResponse) {
     var choice;
 
     const frameMetadata = await fdk.getFrameMetadata({
-      post_url: `${process.env.BASE_URL}/${pollData._id}`,
       buttons: pollData.choices.map((choice: any) => ({
         label: choice.value,
         action: "post", // Embedding choice index
