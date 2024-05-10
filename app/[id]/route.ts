@@ -34,7 +34,7 @@ export async function GET(req: NextRequest, res: NextResponse) {
       buttons: pollData.choices.map((choice: any) => ({
         label: choice.value,
         action: "post", // Embedding choice index
-        target: `${process.env.BASE_URL}/vote/${pollData._id}/${choice.id}`,
+        target: `${process.env.BASE_URL}/${pollData._id}/${choice.id}`,
       })),
 
       image: {
