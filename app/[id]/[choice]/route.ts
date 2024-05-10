@@ -4,8 +4,7 @@ import { getConnectedAddressForUser } from "@/utils/fc";
 import { getPoll, balanceOf } from "@/utils/mint";
 import { PinataFDK } from "pinata-fdk";
 import { Vote } from "@/utils/mint";
-import { ethers } from "ethers";
-import { handle } from "frog/vercel";
+
 
 const fdk = new PinataFDK({
   pinata_jwt: process.env.PINATA_JWT as string,
