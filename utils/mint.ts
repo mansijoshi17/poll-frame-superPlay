@@ -77,22 +77,23 @@ export async function Vote(pollId: string, choice: number) {
   }
 }
 
-// export async function BetAgainstPrediction(amount: bigint) {
-//   try {
-//     const { request }: any = await publicClient.simulateContract({
-//       account,
-//       address: contractAddress,
-//       abi: contractAbi,
-//       functionName: "betAgainst",
-//       args: [amount],
-//     });
-//     const transaction = await walletClient.writeContract(request);
-//     return transaction;
-//   } catch (error) {
-//     console.log(error);
-//     return error;
-//   }
-// }
+export async function getVotes(pollId: string, choice: number) {
+  try {
+    const { request }: any = await publicClient.simulateContract({
+      account,
+      address: contractAddress,
+      abi: contractAbi,
+      functionName: "getVotes",
+      args: [pollId, choice],
+    });
+    const transaction = await walletClient.writeContract(request);
+    console.log(transaction,"transaction");
+    return transaction;
+  } catch (error) {
+    console.log(error);
+    return error;
+  }
+}
 
 export async function mintNft(toAddress: string) {
   try {
