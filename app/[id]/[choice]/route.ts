@@ -4,10 +4,17 @@ import { getConnectedAddressForUser } from "@/utils/fc";
 import { getPoll, balanceOf } from "@/utils/mint";
 import { PinataFDK } from "pinata-fdk";
 import { Vote } from "@/utils/mint";
+import { Button, Frog } from "frog";
+import { handle } from "frog/vercel";
+import contractAbi from "../../../utils/contract.json";
 
 const fdk = new PinataFDK({
   pinata_jwt: process.env.PINATA_JWT as string,
   pinata_gateway: process.env.GATEWAY_URL as string,
+});
+
+const app = new Frog({
+  basePath: "/",
 });
 
 export async function POST(req: NextRequest, res: NextResponse) {
@@ -62,3 +69,4 @@ export async function POST(req: NextRequest, res: NextResponse) {
   //   return new NextResponse(frameMetadata);
   // }
 }
+

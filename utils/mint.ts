@@ -5,6 +5,7 @@ import { baseSepolia } from "viem/chains";
 import contractAbi from "./contract.json";
 import axios from "axios";
 import { publicClient } from "./publicClient";
+import { ethers } from "ethers";
 
 const contractAddress = process.env.CONTRACT_ADDRESS as `0x`;
 
@@ -22,6 +23,8 @@ const walletClient = createWalletClient({
   chain: baseSepolia,
   transport: http(process.env.ALCHEMY_URL),
 });
+
+const provider = new ethers.JsonRpcProvider(`${process.env.ALCHEMY_URL}`);
 
 export async function getPoll(pollId: string | undefined) {
   try {
@@ -87,8 +90,9 @@ export async function getVotes(pollId: string, choice: number) {
       args: [pollId, choice],
     });
     const transaction = await walletClient.writeContract(request);
-    console.log(transaction,"transaction");
-    return transaction;
+    const tx = await provider.getTransaction(transaction);
+
+    return tx?.value.toString();
   } catch (error) {
     console.log(error);
     return error;
