@@ -60,31 +60,32 @@ app.frame("/voted/:id", async (c) => {
   console.log(votes, "votes");
   return c.res({
     image: (
-      <div style={{ color: "white", fontSize: "20px" }}>
-        Total Votes:{" "}
+      <div
+        style={{
+          background: "black",
+          color: "white",
+          display: "flex",
+          flexDirection: "column",
+          fontSize: "24px",
+          backgroundColor: "#333",
+          padding: "20px",
+          borderRadius: "8px",
+        }}
+      >
+        <h2>Total Votes:</h2>
         {pollData.choices.map((choice: any, index: number) => (
-          <div key={index} style={{ margin: "10px 0" }}>
-            <div>{choice.value}</div>
-            <div
+          <div key={index} style={{ marginBottom: "10px" }}>
+            <p
               style={{
-                display: "flex",
-                alignItems: "center",
-                width: "100%",
-                backgroundColor: "#ddd",
+                margin: "5px 0",
+                padding: "10px",
+                backgroundColor: "#555",
+                borderRadius: "5px",
+                color: "#fff",
               }}
             >
-              <div
-                style={{
-                  height: "20px",
-                  width: `${(votes[index] / Math.max(...votes)) * 100}%`,
-                  backgroundColor: "blue",
-                  transition: "width 0.5s ease-in-out",
-                }}
-              ></div>
-              <span style={{ marginLeft: "10px" }}>
-                {((votes[index] / Math.max(...votes)) * 100).toFixed(2)}%
-              </span>
-            </div>
+              {choice.value}: <strong>{votes[index]}</strong>
+            </p>
           </div>
         ))}
       </div>
