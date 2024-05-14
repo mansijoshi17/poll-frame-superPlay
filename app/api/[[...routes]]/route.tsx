@@ -5,6 +5,7 @@ import { Button, Frog } from "frog";
 import { handle } from "frog/vercel";
 import { getPoll, Vote } from "@/utils/mint";
 import contractAbi from "../../../utils/contract.json";
+import { redirect } from "next/dist/server/api-utils";
 
 const app = new Frog({
   basePath: "/api",
@@ -55,14 +56,9 @@ app.transaction("/vote/:pollId/:choice", async (c) => {
 
 app.frame("/voted", (c) => {
   return c.res({
-    browserLocation: "https://cointopper.com/",
     image:
       "https://bafybeia6w3skqj5uhgfvnma22ycprlyznpthj52eo5x5gflkg4i7meenuy.ipfs.dweb.link/",
-    intents: (
-      <Button action="https://cointopper.com/">
-        Want to learn more about crypto?
-      </Button>
-    ),
+    intents: <Button>Want to learn more about crypto?</Button>,
   });
 });
 
