@@ -60,19 +60,9 @@ app.frame("/voted/:id", async (c) => {
   console.log(votes, "votes");
   return c.res({
     image: (
-      <div
-        style={{
-          color: "white",
-          background: "black",
-          justifyContent: "center",
-          fontSize: 50,
-        }}
-      >
-        Total Votes:
-        {pollData.choices.map((choice: any, index: number) => (
-          <p>
-            {choice.value}:{votes[index]}
-          </p>
+      <div style={{ color: "black", fontSize: 60 }}>
+        Total Votes: {pollData.choices.map((choice: any, index: number) =>  (
+            <p>{choice.value}:{votes[index]} </p>
         ))}
       </div>
     ),
