@@ -55,11 +55,18 @@ app.transaction("/vote/:pollId/:choice", async (c) => {
 
 app.frame("/voted/:id", async (c) => {
   const pollId = c.req.param("id");
+  const pollData: any = await getPoll(pollId); // Retrieve the poll data based on the link
   let votes: any = await getVotes(pollId);
+  console.log(votes, "votes");
   return c.res({
     image: (
       <div style={{ color: "white", display: "flex", fontSize: 60 }}>
-        Total Votes: {votes.map((vote: any) => vote.toString())}
+        Total Votes:{" "}
+        {pollData.choices.map((choice: any, index: number) => (
+          <p>
+            {choice.value}:{votes[index]}
+          </p>
+        ))}
       </div>
     ),
   });

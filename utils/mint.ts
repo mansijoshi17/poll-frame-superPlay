@@ -9,22 +9,17 @@ import { ethers } from "ethers";
 
 const contractAddress = process.env.CONTRACT_ADDRESS as `0x`;
 
-const account = privateKeyToAccount(
-  (process.env.NEXT_APP_PRIVATE_KEY as `0x`) || ""
-);
-
 interface PollData {
   title: string;
   choices: string[];
 }
 
-const walletClient = createWalletClient({
-  account,
-  chain: baseSepolia,
-  transport: http(process.env.ALCHEMY_URL),
-});
-
 const provider = new ethers.JsonRpcProvider(`${process.env.ALCHEMY_URL}`);
+const signer = new ethers.Wallet(
+  process.env.NEXT_APP_PRIVATE_KEY as `0x`,
+  provider
+);
+const contract = new ethers.Contract(contractAddress, contractAbi, signer);
 
 export async function getPoll(pollId: string | undefined) {
   try {
@@ -47,32 +42,7 @@ export async function CreatePoll(
   pollId: string
 ) {
   try {
-    console.log(typeof pollId, "pollId in MINT TS");
-    const { request }: any = await publicClient.simulateContract({
-      account,
-      address: contractAddress,
-      abi: contractAbi,
-      functionName: "createPoll",
-      args: [name, numOfChoice, pollId],
-    });
-    const transaction = await walletClient.writeContract(request);
-    return transaction;
-  } catch (error) {
-    console.log(error);
-    return error;
-  }
-}
-
-export async function Vote(pollId: string, choice: number) {
-  try {
-    const { request }: any = await publicClient.simulateContract({
-      account,
-      address: contractAddress,
-      abi: contractAbi,
-      functionName: "vote",
-      args: [pollId, choice],
-    });
-    const transaction = await walletClient.writeContract(request);
+    const transaction = await contract.createPoll(name, numOfChoice, pollId);
     return transaction;
   } catch (error) {
     console.log(error);
@@ -82,50 +52,9 @@ export async function Vote(pollId: string, choice: number) {
 
 export async function getVotes(pollId: string) {
   try {
-    const { request }: any = await publicClient.simulateContract({
-      account,
-      address: contractAddress,
-      abi: contractAbi,
-      functionName: "getVotes",
-      args: [pollId],
-    });
-    const transaction = await walletClient.writeContract(request);
-    const tx = await provider.getTransaction(transaction);
-
-    return tx?.value;
-  } catch (error) {
-    console.log(error);
-    return error;
-  }
-}
-
-export async function mintNft(toAddress: string) {
-  try {
-    const { request }: any = await publicClient.simulateContract({
-      account,
-      address: contractAddress,
-      abi: contractAbi,
-      functionName: "mint",
-      args: [toAddress, 0, 1, `0x`],
-    });
-    const transaction = await walletClient.writeContract(request);
-    return transaction;
-  } catch (error) {
-    console.log(error);
-    return error;
-  }
-}
-
-export async function balanceOf(address: string) {
-  try {
-    const balanceData = await publicClient.readContract({
-      address: contractAddress,
-      abi: contractAbi,
-      functionName: "getBalance",
-      args: [address],
-    });
-    const balance: number = Number(balanceData);
-    return balance;
+    const votes = await contract.getVotes(pollId);
+    const pollVotes = votes.map((vote: any) => vote.toString());
+    return pollVotes;
   } catch (error) {
     console.log(error);
     return error;
