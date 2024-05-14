@@ -68,10 +68,10 @@ app.frame("/voted/:id", async (c) => {
           fontSize: 50,
         }}
       >
-        Total Votes:{" "}
+        Total Votes:
         {pollData.choices.map((choice: any, index: number) => (
           <p>
-            {choice.value}:{votes[index]}{" "}
+            {choice.value}:{votes[index]}
           </p>
         ))}
       </div>
