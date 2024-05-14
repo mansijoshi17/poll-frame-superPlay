@@ -31,9 +31,9 @@ app.frame("/poll/:id", async (c) => {
     image: `https://via.placeholder.com/600x400/white/black?text=${pollData.title}%0A%0AEnding In : ${formattedTime}`,
     intents: pollData.choices.map((choice: any) => {
       return (
-        <Button value={choice.id} action={`/vote/${pollData._id}/${choice.id}`}>
+        <Button.Transaction target={`/vote/${pollData._id}/${choice.id}`}>
           {choice.value}
-        </Button>
+        </Button.Transaction>
       );
     }),
   });
