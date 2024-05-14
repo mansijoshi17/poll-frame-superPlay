@@ -67,3 +67,4 @@ app.frame("/voted", (c) => {
 });
 
 export const GET = handle(app);
+export const POST = handle(app);
