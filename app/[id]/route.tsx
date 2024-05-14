@@ -1,10 +1,14 @@
 "use server";
+/** @jsxImportSource frog/jsx */
 import { NextRequest, NextResponse } from "next/server";
 import { getConnectedAddressForUser } from "@/utils/fc";
 import { getPoll, balanceOf } from "@/utils/mint";
 import { PinataFDK } from "pinata-fdk";
 import { getVotes } from "@/utils/mint";
 import { ethers } from "ethers";
+
+import { Button, Frog } from "frog";
+import { handle } from "frog/vercel";
 
 const fdk = new PinataFDK({
   pinata_jwt: process.env.PINATA_JWT as string,
