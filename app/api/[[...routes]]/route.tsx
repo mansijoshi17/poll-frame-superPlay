@@ -3,9 +3,8 @@
 
 import { Button, Frog } from "frog";
 import { handle } from "frog/vercel";
-import { getPoll, Vote } from "@/utils/mint";
+import { getPoll } from "@/utils/mint";
 import contractAbi from "../../../utils/contract.json";
-import { redirect } from "next/dist/server/api-utils";
 
 const app = new Frog({
   basePath: "/api",
