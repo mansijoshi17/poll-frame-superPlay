@@ -10,6 +10,22 @@ const app = new Frog({
   basePath: "/api",
 });
 
+function generatePlaceholderURL(pollData: any, votes: any) {
+  const title = encodeURIComponent(pollData.title);
+  let text = `Total%20Votes%0A`;
+
+  // Append each choice and its votes
+  pollData.choices.forEach((choice: any, index: number) => {
+    text += `${encodeURIComponent(choice.value)}:%20${votes[index]}%0A`;
+  });
+
+  // Add title and formatted time
+  text += `${title}`;
+
+  // Construct the final URL
+  return `https://via.placeholder.com/600x400/white/black?text=${text}`;
+}
+
 app.frame("/poll/:id", async (c) => {
   const id = c.req.param("id");
   const pollData: any = await getPoll(id); // Retrieve the poll data based on the link
@@ -57,15 +73,9 @@ app.frame("/voted/:id", async (c) => {
   const pollId = c.req.param("id");
   const pollData: any = await getPoll(pollId); // Retrieve the poll data based on the link
   let votes: any = await getVotes(pollId);
-  console.log(votes, "votes");
+
   return c.res({
-    image: (
-      <div style={{ color: "black", fontSize: 60 }}>
-        Total Votes: {pollData.choices.map((choice: any, index: number) =>  (
-            <p>{choice.value}:{votes[index]} </p>
-        ))}
-      </div>
-    ),
+    image: generatePlaceholderURL(pollData, votes),
   });
 });
 
