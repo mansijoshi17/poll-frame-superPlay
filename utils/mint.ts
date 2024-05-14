@@ -80,19 +80,19 @@ export async function Vote(pollId: string, choice: number) {
   }
 }
 
-export async function getVotes(pollId: string, choice: number) {
+export async function getVotes(pollId: string) {
   try {
     const { request }: any = await publicClient.simulateContract({
       account,
       address: contractAddress,
       abi: contractAbi,
       functionName: "getVotes",
-      args: [pollId, choice],
+      args: [pollId],
     });
     const transaction = await walletClient.writeContract(request);
     const tx = await provider.getTransaction(transaction);
 
-    return tx?.value.toString();
+    return tx?.value;
   } catch (error) {
     console.log(error);
     return error;

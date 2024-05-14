@@ -3,7 +3,7 @@
 
 import { Button, Frog } from "frog";
 import { handle } from "frog/vercel";
-import { getPoll } from "@/utils/mint";
+import { getPoll, getVotes } from "@/utils/mint";
 import contractAbi from "../../../utils/contract.json";
 
 const app = new Frog({
@@ -27,7 +27,7 @@ app.frame("/poll/:id", async (c) => {
     formattedTime = `${days}:${hours}:${minutes}:${seconds}`;
   }
   return c.res({
-    action: "/voted",
+    action: `/voted/${pollData._id}`,
     image: `https://via.placeholder.com/600x400/white/black?text=${pollData.title}%0A%0AEnding In : ${formattedTime}`,
     intents: pollData.choices.map((choice: any) => {
       return (
@@ -53,11 +53,15 @@ app.transaction("/vote/:pollId/:choice", async (c) => {
   });
 });
 
-app.frame("/voted", (c) => {
+app.frame("/voted/:id", async (c) => {
+  const pollId = c.req.param("id");
+  let votes: any = await getVotes(pollId);
   return c.res({
-    image:
-      "https://bafybeia6w3skqj5uhgfvnma22ycprlyznpthj52eo5x5gflkg4i7meenuy.ipfs.dweb.link/",
-    intents: <Button>Want to learn more about crypto?</Button>,
+    image: (
+      <div style={{ color: "white", display: "flex", fontSize: 60 }}>
+        Total Votes: {votes.map((vote: any) => vote.toString())}
+      </div>
+    ),
   });
 });
 

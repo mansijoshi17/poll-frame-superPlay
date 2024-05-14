@@ -2,53 +2,40 @@
 pragma solidity ^0.8.0;
 
 contract PollContract {
-    // Structure to hold the details of a poll
     struct Poll {
         string id;
         string name;
-        mapping(uint => uint) choices; // Choice number to votes count
+        uint[] choices; // Array to hold votes for choices
         mapping(address => bool) voters; // Track if an address has voted
     }
-    
-    // State variable to store polls
-    mapping(string => Poll) private polls;
 
-    // Event to emit when a vote is cast
+    mapping(string => Poll) private polls;
     event VoteCasted(string indexed pollId, uint choice, uint votes);
 
     // Function to create a new poll
-    function createPoll(string calldata name, uint numChoices, string calldata pollId) public returns (string calldata) {
+    function createPoll(string calldata name, uint numChoices, string calldata pollId) public returns (string memory) {
         Poll storage p = polls[pollId];
         p.id = pollId;
         p.name = name;
 
-        // Initialize each choice with 0 votes
-        for (uint i = 1; i <= numChoices; i++) {
-            p.choices[i] = 0;
-        }
-
+        // Initialize choices array with zeros
+        p.choices = new uint[](numChoices);
         return pollId;
     }
 
     // Function to vote on a poll
-    function vote(string calldata  pollId, uint choice) public {
+    function vote(string calldata pollId, uint choice) public {
         Poll storage p = polls[pollId];
-        require(choice != 0, "Choice must be greater than zero");
+        require(choice < p.choices.length, "Invalid choice");
         require(!p.voters[msg.sender], "You have already voted!");
-
-        // Record that the voter has voted
         p.voters[msg.sender] = true;
-
-        // Increment the vote count for the chosen option
         p.choices[choice]++;
-
-        // Emit an event for the new vote
         emit VoteCasted(pollId, choice, p.choices[choice]);
     }
 
-    // Function to get the total votes for a choice in a poll
-    function getVotes(string calldata pollId, uint choice) public view returns (uint) {
+    // Function to get the total votes for each choice in a poll
+    function getVotes(string calldata pollId) public view returns (uint[] memory) {
         Poll storage p = polls[pollId];
-        return p.choices[choice];
+        return p.choices;
     }
 }
