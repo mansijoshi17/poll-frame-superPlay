@@ -12,17 +12,21 @@ const app = new Frog({
 
 async function generatePlaceholderURL(pollData: any, votes: any) {
   const title = encodeURIComponent(pollData.title);
-  let text = `Total%20Votes%0A`;
+  let text = `${title}%0A`;
 
-  text += `${title}`;
+  text += `Total%20Votes%0A`;
 
   // Append each choice and its votes
   pollData.choices.forEach((choice: any, index: number) => {
-    text += `${encodeURIComponent(choice.value)}:%20${votes[index]}%0A`;
+    if (votes[index] == undefined) {
+      text += `${encodeURIComponent(choice.value)}:%20${0}%0A`;
+    } else {
+      text += `${encodeURIComponent(choice.value)}:%20${votes[index]}%0A`;
+    }
   });
 
   // Construct the final URL
-  return `https://via.placeholder.com/600x400/white/black?text=${text}`;
+  return `https://via.placeholder.com/700x500/white/black?text=${text}`;
 }
 
 app.frame("/poll/:id", async (c) => {
@@ -73,6 +77,7 @@ app.frame("/voted/:id", async (c) => {
   const pollData: any = await getPoll(pollId); // Retrieve the poll data based on the link
   let votes: any = await getVotes(pollId);
   let url = await generatePlaceholderURL(pollData, votes);
+
   return c.res({
     image: url,
   });
