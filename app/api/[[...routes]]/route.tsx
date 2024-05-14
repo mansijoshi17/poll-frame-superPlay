@@ -62,31 +62,17 @@ app.frame("/voted/:id", async (c) => {
     image: (
       <div
         style={{
-          background: "black",
           color: "white",
-          display: "flex",
-          flexDirection: "column",
-          fontSize: "24px",
-          backgroundColor: "#333",
-          padding: "20px",
-          borderRadius: "8px",
+          background: "black",
+          justifyContent: "center",
+          fontSize: 50,
         }}
       >
-        <h2>Total Votes:</h2>
+        Total Votes:{" "}
         {pollData.choices.map((choice: any, index: number) => (
-          <div key={index} style={{ marginBottom: "10px" }}>
-            <p
-              style={{
-                margin: "5px 0",
-                padding: "10px",
-                backgroundColor: "#555",
-                borderRadius: "5px",
-                color: "#fff",
-              }}
-            >
-              {choice.value}: <strong>{votes[index]}</strong>
-            </p>
-          </div>
+          <p>
+            {choice.value}:{votes[index]}{" "}
+          </p>
         ))}
       </div>
     ),
