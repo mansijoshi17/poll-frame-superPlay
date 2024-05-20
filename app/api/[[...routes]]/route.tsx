@@ -6,8 +6,15 @@ import { handle } from "frog/vercel";
 import { getPoll, getVotes } from "@/utils/mint";
 import contractAbi from "../../../utils/contract.json";
 
-const app = new Frog({
+type State = {
+  count: number;
+};
+
+const app = new Frog<{ State: State }>({
   basePath: "/api",
+  initialState: {
+    isSucess: false,
+  },
 });
 
 async function generatePlaceholderURL(pollData: any, votes: any) {
@@ -46,7 +53,7 @@ app.frame("/poll/:id", async (c) => {
     formattedTime = `${days}:${hours}:${minutes}:${seconds}`;
   }
   return c.res({
-    action: `/voted/${pollData._id}`,
+    action: `/wait/${pollData._id}`,
     image: `https://via.placeholder.com/600x400/white/black?text=${pollData.title}%0A%0AEnding In : ${formattedTime}`,
     intents: pollData.choices.map((choice: any) => {
       return (
@@ -69,6 +76,21 @@ app.transaction("/vote/:pollId/:choice", async (c) => {
     functionName: "vote",
     to: process.env.CONTRACT_ADDRESS as "0x",
     args: [pollId, choice],
+  });
+});
+
+app.frame("/wait/:id", (c) => {
+  const { transactionId } = c;
+  const pollId = c.req.param("id");
+  return c.res({
+    image: (
+      <div style={{ color: "black", fontSize: 60 }}>
+        {transactionId
+          ? transactionId
+          : "Your vote is being recorded on the blockchain. This may take a few moments."}
+      </div>
+    ),
+    intents: [<Button action={`/voted/${pollId}`}>Refresh</Button>],
   });
 });
 

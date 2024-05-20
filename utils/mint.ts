@@ -53,7 +53,7 @@ export async function CreatePoll(
 export async function getVotes(pollId: string) {
   try {
     const votes = await contract.getVotes(pollId);
-    const pollVotes = votes.map((vote: any) => vote.toString());
+    const pollVotes = await votes.map((vote: any) => vote.toString());
     return pollVotes;
   } catch (error) {
     console.log(error);
