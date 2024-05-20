@@ -86,11 +86,11 @@ app.frame("/wait/:id", (c) => {
     image: (
       <div style={{ color: "black", fontSize: 60 }}>
         {transactionId
-          ? transactionId
+          ? `Your vote is being recorded on the blockchain. Thank you :)`
           : "Your vote is being recorded on the blockchain. This may take a few moments."}
       </div>
     ),
-    intents: [<Button action={`/voted/${pollId}`}>Refresh</Button>],
+    intents: [<Button action={`/voted/${pollId}`}>View Votes</Button>],
   });
 });
 
